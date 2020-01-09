@@ -513,7 +513,7 @@ namespace SapphireActionParseV2
             {
                 table[value.StatusId] = new List<FFXIVStatusEffect>();
             }
-            table[value.StatusId].Add(value);
+            table[value.StatusId].Insert(0, value);
         }
 
         private static void Overwrite(this Dictionary<uint, List<FFXIVStatusEffect>> table, FFXIVStatusEffect value)
