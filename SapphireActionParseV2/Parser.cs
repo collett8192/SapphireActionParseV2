@@ -255,6 +255,17 @@ namespace SapphireActionParseV2
                                             statusEffectTable.Add(se);
                                         }
                                         break;
+                                    case "healreceivemultiplier":
+                                        {
+                                            XAttribute attrAmount = eleEffect.Attribute("amount");
+                                            if (attrAmount == null) { continue; }
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
+                                            se.StatusId = buffId;
+                                            se.EffectType = StatusEffectType.HealReceiveMultiplier;
+                                            se.EffectValue2 = int.Parse(attrAmount.Value);
+                                            statusEffectTable.Add(se);
+                                        }
+                                        break;
                                 }
                             }
                             foreach (XElement eleProc in eleBuff.Elements("proc"))
@@ -324,6 +335,7 @@ namespace SapphireActionParseV2
             actionTable[3571].Modify(a => { a.GainMPPercentage = 5; });
             actionTable[3643].Modify(a => { a.GainMPPercentage = 6; });
             actionTable[166].Modify(a => { a.GainMPPercentage = 10; });
+            actionTable[7383].Modify(a => { a.DamagePotency = 550; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue2 = -20 });
             //#####################
@@ -480,6 +492,12 @@ namespace SapphireActionParseV2
                                         sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
                                     }
                                     break;
+                                case StatusEffectType.HealReceiveMultiplier:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeHealReceiveMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
+                                    }
+                                    break;
                             }
                             sw.Write("  ");
                             if (i > 0)
@@ -578,6 +596,7 @@ namespace SapphireActionParseV2
             DamageReceiveMultiplier = 2,
             Hot = 3,
             Dot = 4,
+            HealReceiveMultiplier = 5,
         }
     }
 }
