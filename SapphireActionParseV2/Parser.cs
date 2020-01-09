@@ -227,6 +227,34 @@ namespace SapphireActionParseV2
                                             statusEffectTable.Add(se);
                                         }
                                         break;
+                                    case "damagereceivemultiplier":
+                                        {
+                                            XAttribute attrAmount = eleEffect.Attribute("amount");
+                                            if (attrAmount == null) { continue; }
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
+                                            se.StatusId = buffId;
+                                            se.EffectType = StatusEffectType.DamageReceiveMultiplier;
+                                            XAttribute attrLimitToDmgType = eleEffect.Attribute("limitto_damagetype");
+                                            if (attrLimitToDmgType != null)
+                                            {
+                                                switch (attrLimitToDmgType.Value)
+                                                {
+                                                    case "physical":
+                                                        {
+                                                            se.EffectValue1 = 1;
+                                                        }
+                                                        break;
+                                                    case "magic":
+                                                        {
+                                                            se.EffectValue1 = 2;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                            se.EffectValue2 = int.Parse(attrAmount.Value);
+                                            statusEffectTable.Add(se);
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -249,6 +277,8 @@ namespace SapphireActionParseV2
             actionTable[3571].Modify(a => { a.GainMPPercentage = 5; });
             actionTable[3643].Modify(a => { a.GainMPPercentage = 6; });
             actionTable[166].Modify(a => { a.GainMPPercentage = 10; });
+
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue2 = -20 });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -327,7 +357,31 @@ namespace SapphireActionParseV2
                             {
                                 case StatusEffectType.DamageMultiplier:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: damageMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeDamageMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        switch (entry.Value[i].EffectValue1)
+                                        {
+                                            case 1:
+                                                {
+                                                    sw.Write("physical, ");
+                                                }
+                                                break;
+                                            case 2:
+                                                {
+                                                    sw.Write("magic, ");
+                                                }
+                                                break;
+                                            default:
+                                                {
+                                                    sw.Write("all, ");
+                                                }
+                                                break;
+                                        }
+                                        sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
+                                    }
+                                    break;
+                                case StatusEffectType.DamageReceiveMultiplier:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeDamageReceiveMultiplier, ", statusNamePair.First, statusNamePair.Second));
                                         switch (entry.Value[i].EffectValue1)
                                         {
                                             case 1:
@@ -385,6 +439,17 @@ namespace SapphireActionParseV2
             table[value.StatusId].Add(value);
         }
 
+        private static void Overwrite(this Dictionary<uint, List<FFXIVStatusEffect>> table, FFXIVStatusEffect value)
+        {
+            if (value.EffectType == StatusEffectType.Invalid) { return; }
+            if (!table.ContainsKey(value.StatusId))
+            {
+                table[value.StatusId] = new List<FFXIVStatusEffect>();
+            }
+            table[value.StatusId].Clear();
+            table[value.StatusId].Add(value);
+        }
+
         private class Pair<T1, T2>
         {
             public T1 First{ get; set; }
@@ -433,6 +498,7 @@ namespace SapphireActionParseV2
         {
             Invalid = 0,
             DamageMultiplier = 1,
+            DamageReceiveMultiplier = 2,
         }
     }
 }
