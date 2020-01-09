@@ -108,6 +108,7 @@ namespace SapphireActionParseV2
             }
 
             Dictionary<uint, FFXIVAction> actionTable = new Dictionary<uint, FFXIVAction>();
+            Dictionary<uint, List<FFXIVStatusEffect>> statusEffectTable = new Dictionary<uint, List<FFXIVStatusEffect>>();
 
             DirectoryInfo di = new DirectoryInfo(basePath);
             foreach (var f in di.GetFiles("abilities_*.xml"))
@@ -173,32 +174,59 @@ namespace SapphireActionParseV2
 
                         foreach (XElement eleBuff in ability.Elements("buff"))
                         {
+                            XAttribute attrBuffId = eleBuff.Attribute("id");
+                            if (attrBuffId == null) { continue; }
+                            uint buffId = uint.Parse(attrBuffId.Value, System.Globalization.NumberStyles.HexNumber);
+                            if (!statusNameTable.ContainsKey(buffId)) { continue; }
+                            var namePair = statusNameTable[buffId];
                             if (eleBuff.Attribute("target")?.Value == "self")
                             {
-                                XAttribute attrBuffId = eleBuff.Attribute("id");
-                                if (attrBuffId == null) { continue; }
-                                uint buffId = uint.Parse(attrBuffId.Value, System.Globalization.NumberStyles.HexNumber);
-                                if (statusNameTable.ContainsKey(buffId))
-                                {
-                                    var namePair = statusNameTable[buffId];
-                                    action.SelfStatus = buffId;
-                                    XAttribute attrDuration = eleBuff.Attribute("duration");
-                                    action.SelfStatusDuration = attrDuration == null ? 0 : uint.Parse(attrDuration.Value) * 1000;
-                                    Console.WriteLine(string.Format("Found self status: {0}, {1}, {2}, {3}", id, action.TargetStatusDuration, namePair.First, namePair.Second));
-                                }
+                                action.SelfStatus = buffId;
+                                XAttribute attrDuration = eleBuff.Attribute("duration");
+                                action.SelfStatusDuration = attrDuration == null ? 0 : uint.Parse(attrDuration.Value) * 1000;
+                                Console.WriteLine(string.Format("Found self status: {0}, {1}, {2}, {3}", id, action.TargetStatusDuration, namePair.First, namePair.Second));
                             }
                             else
                             {
-                                XAttribute attrBuffId = eleBuff.Attribute("id");
-                                if (attrBuffId == null) { continue; }
-                                uint buffId = uint.Parse(attrBuffId.Value, System.Globalization.NumberStyles.HexNumber);
-                                if (statusNameTable.ContainsKey(buffId))
+                                action.TargetStatus = buffId;
+                                XAttribute attrDuration = eleBuff.Attribute("duration");
+                                action.TargetStatusDuration = attrDuration == null ? 0 : uint.Parse(attrDuration.Value) * 1000;
+                                Console.WriteLine(string.Format("Found target status: {0}, {1}, {2}, {3}", id, action.TargetStatusDuration, namePair.First, namePair.Second));
+                            }
+                            foreach( XElement eleEffect in eleBuff.Elements("effect"))
+                            {
+                                XAttribute attrType = eleEffect.Attribute("type");
+                                if (attrType == null) { continue; }
+                                switch (attrType.Value)
                                 {
-                                    var namePair = statusNameTable[buffId];
-                                    action.TargetStatus = buffId;
-                                    XAttribute attrDuration = eleBuff.Attribute("duration");
-                                    action.TargetStatusDuration = attrDuration == null ? 0 : uint.Parse(attrDuration.Value) * 1000;
-                                    Console.WriteLine(string.Format("Found target status: {0}, {1}, {2}, {3}", id, action.TargetStatusDuration, namePair.First, namePair.Second));
+                                    case "damagemultiplier":
+                                        {
+                                            XAttribute attrAmount = eleEffect.Attribute("amount");
+                                            if (attrAmount == null) { continue; }
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
+                                            se.StatusId = buffId;
+                                            se.EffectType = StatusEffectType.DamageMultiplier;
+                                            XAttribute attrLimitToDmgType = eleEffect.Attribute("limitto_damagetype");
+                                            if (attrLimitToDmgType != null)
+                                            {
+                                                switch (attrLimitToDmgType.Value)
+                                                {
+                                                    case "physical":
+                                                        {
+                                                            se.EffectValue1 = 1;
+                                                        }
+                                                        break;
+                                                    case "magic":
+                                                        {
+                                                            se.EffectValue1 = 2;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                            se.EffectValue2 = int.Parse(attrAmount.Value);
+                                            statusEffectTable.Add(se);
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -281,6 +309,63 @@ namespace SapphireActionParseV2
                         action.Value.GainJobResource));
                 }
                 sw.WriteLine("};");
+                sw.WriteLine("");
+                sw.WriteLine("ActionLut::StatusEffectTable ActionLut::m_statusEffectTable =");
+                sw.WriteLine("{");
+                foreach (var entry in statusEffectTable)
+                {
+                    if (entry.Value.Count > 0)
+                    {
+                        for (int i = 0; i < entry.Value.Count; i++)
+                        {
+                            if (i == 1)
+                            {
+                                sw.WriteLine("  //more than 1 effect is found");
+                            }
+                            var statusNamePair = statusNameTable[entry.Key];
+                            switch (entry.Value[i].EffectType)
+                            {
+                                case StatusEffectType.DamageMultiplier:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: damageMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        switch (entry.Value[i].EffectValue1)
+                                        {
+                                            case 1:
+                                                {
+                                                    sw.Write("physical, ");
+                                                }
+                                                break;
+                                            case 2:
+                                                {
+                                                    sw.Write("magic, ");
+                                                }
+                                                break;
+                                            default:
+                                                {
+                                                    sw.Write("all, ");
+                                                }
+                                                break;
+                                        }
+                                        sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
+                                    }
+                                    break;
+                            }
+                            sw.Write("  ");
+                            if (i > 0)
+                            {
+                                sw.Write("//");
+                            }
+                            sw.WriteLine(string.Format("{{ {0}, {{ {1}, {2}, {3}, {4}, {4} }} }},", 
+                                entry.Value[i].StatusId,
+                                (uint)entry.Value[i].EffectType,
+                                entry.Value[i].EffectValue1,
+                                entry.Value[i].EffectValue2,
+                                entry.Value[i].EffectValue3,
+                                entry.Value[i].EffectValue4));
+                        }
+                    }
+                }
+                sw.WriteLine("};");
             }
             Console.WriteLine("##### DONE #####");
         }
@@ -288,6 +373,16 @@ namespace SapphireActionParseV2
         private static void Modify(this FFXIVAction action, Action<FFXIVAction> callback)
         {
             callback(action);
+        }
+
+        private static void Add(this Dictionary<uint, List<FFXIVStatusEffect>> table, FFXIVStatusEffect value)
+        {
+            if (value.EffectType == StatusEffectType.Invalid) { return; }
+            if (!table.ContainsKey(value.StatusId))
+            {
+                table[value.StatusId] = new List<FFXIVStatusEffect>();
+            }
+            table[value.StatusId].Add(value);
         }
 
         private class Pair<T1, T2>
@@ -322,6 +417,22 @@ namespace SapphireActionParseV2
             public uint TargetStatusParam { get; set; }
             public uint GainMPPercentage { get; set; }
             public uint GainJobResource { get; set; }
+        }
+
+        private class FFXIVStatusEffect
+        {
+            public uint StatusId { get; set; }
+            public StatusEffectType EffectType { get; set; }
+            public int EffectValue1 { get; set; }
+            public int EffectValue2 { get; set; }
+            public int EffectValue3 { get; set; }
+            public int EffectValue4 { get; set; }
+        }
+
+        private enum StatusEffectType : uint
+        {
+            Invalid = 0,
+            DamageMultiplier = 1,
         }
     }
 }
