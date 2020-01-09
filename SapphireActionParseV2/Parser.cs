@@ -193,7 +193,7 @@ namespace SapphireActionParseV2
                                 action.TargetStatusDuration = attrDuration == null ? 0 : uint.Parse(attrDuration.Value) * 1000;
                                 Console.WriteLine(string.Format("Found target status: {0}, {1}, {2}, {3}", id, action.TargetStatusDuration, namePair.First, namePair.Second));
                             }
-                            foreach( XElement eleEffect in eleBuff.Elements("effect"))
+                            foreach(XElement eleEffect in eleBuff.Elements("effect"))
                             {
                                 XAttribute attrType = eleEffect.Attribute("type");
                                 if (attrType == null) { continue; }
@@ -252,6 +252,53 @@ namespace SapphireActionParseV2
                                                 }
                                             }
                                             se.EffectValue2 = int.Parse(attrAmount.Value);
+                                            statusEffectTable.Add(se);
+                                        }
+                                        break;
+                                }
+                            }
+                            foreach (XElement eleProc in eleBuff.Elements("proc"))
+                            {
+                                XAttribute attrTrigger = eleProc.Attribute("trigger");
+                                if (attrTrigger == null) { continue; }
+                                switch (attrTrigger.Value)
+                                {
+                                    case "dot":
+                                        {
+                                            XAttribute attrPot = eleProc.Attribute("potency");
+                                            if (attrPot == null) { continue; }
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
+                                            se.StatusId = buffId;
+                                            se.EffectType = StatusEffectType.Dot;
+                                            XAttribute attrDmgType = eleProc.Attribute("damagetype");
+                                            if (attrDmgType != null)
+                                            {
+                                                switch (attrDmgType.Value)
+                                                {
+                                                    case "physical":
+                                                        {
+                                                            se.EffectValue1 = 1;
+                                                        }
+                                                        break;
+                                                    case "magic":
+                                                        {
+                                                            se.EffectValue1 = 2;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                            se.EffectValue2 = int.Parse(attrPot.Value);
+                                            statusEffectTable.Add(se);
+                                        }
+                                        break;
+                                    case "hot":
+                                        {
+                                            XAttribute attrPot = eleProc.Attribute("potency");
+                                            if (attrPot == null) { continue; }
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
+                                            se.StatusId = buffId;
+                                            se.EffectType = StatusEffectType.Hot;
+                                            se.EffectValue2 = int.Parse(attrPot.Value);
                                             statusEffectTable.Add(se);
                                         }
                                         break;
@@ -403,6 +450,36 @@ namespace SapphireActionParseV2
                                         sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
                                     }
                                     break;
+                                case StatusEffectType.Dot:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeDot, ", statusNamePair.First, statusNamePair.Second));
+                                        switch (entry.Value[i].EffectValue1)
+                                        {
+                                            case 1:
+                                                {
+                                                    sw.Write("physical, ");
+                                                }
+                                                break;
+                                            case 2:
+                                                {
+                                                    sw.Write("magic, ");
+                                                }
+                                                break;
+                                            default:
+                                                {
+                                                    sw.Write("unknown, ");
+                                                }
+                                                break;
+                                        }
+                                        sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
+                                    }
+                                    break;
+                                case StatusEffectType.Hot:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeHot, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
+                                    }
+                                    break;
                             }
                             sw.Write("  ");
                             if (i > 0)
@@ -499,6 +576,8 @@ namespace SapphireActionParseV2
             Invalid = 0,
             DamageMultiplier = 1,
             DamageReceiveMultiplier = 2,
+            Hot = 3,
+            Dot = 4,
         }
     }
 }
