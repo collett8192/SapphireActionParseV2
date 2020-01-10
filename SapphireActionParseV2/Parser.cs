@@ -363,7 +363,7 @@ namespace SapphireActionParseV2
             actionTable[166].Modify(a => { a.GainMPPercentage = 10; });
             actionTable[7383].Modify(a => { a.DamagePotency = 550; });
 
-            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = 1, EffectValue2 = -20 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = 255, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 1, EffectValue2 = 100, EffectValue3 = 100 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1177, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 1, EffectValue2 = 100, EffectValue3 = 100 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 1, EffectValue2 = 20, EffectValue3 = 20 });
