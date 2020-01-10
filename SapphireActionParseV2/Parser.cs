@@ -172,6 +172,13 @@ namespace SapphireActionParseV2
                             }
                         }
 
+                        XElement elePowerHeal = ability.Element("powerheal");
+                        if (elePowerHeal != null)
+                        {
+                            action.HasPowerHealTag = true;
+                            Console.WriteLine("Found powerheal.");
+                        }
+
                         foreach (XElement eleBuff in ability.Elements("buff"))
                         {
                             XAttribute attrBuffId = eleBuff.Attribute("id");
@@ -362,6 +369,8 @@ namespace SapphireActionParseV2
             actionTable[3643].Modify(a => { a.GainMPPercentage = 6; });
             actionTable[166].Modify(a => { a.GainMPPercentage = 10; });
             actionTable[7383].Modify(a => { a.DamagePotency = 550; });
+            actionTable[158].Modify(a => { a.GainMPPercentage = 30; });
+            actionTable[167].Modify(a => { a.GainMPPercentage = 5; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = 255, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 1, EffectValue2 = 100, EffectValue3 = 100 });
@@ -404,13 +413,13 @@ namespace SapphireActionParseV2
                     }
                     if (action.Value.GainMPPercentage > 0)
                     {
-                        sw.WriteLine(string.Format("  //restores mp {0}%", action.Value.GainMPPercentage));
+                        sw.WriteLine(string.Format("  //restores mp: {0}%", action.Value.GainMPPercentage));
                     }
-                    if (action.Value.GainJobResource > 0)
+                    if (action.Value.HasPowerHealTag)
                     {
-                        sw.WriteLine(string.Format("  //gains job resource {0}", action.Value.GainJobResource));
+                        sw.WriteLine("  //has powerheal");
                     }
-                    sw.WriteLine(string.Format("  {{ {0}, {{ {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13} }} }},",
+                    sw.WriteLine(string.Format("  {{ {0}, {{ {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12} }} }},",
                         action.Key,
                         action.Value.DamagePotency,
                         action.Value.DamageComboPotency,
@@ -423,8 +432,7 @@ namespace SapphireActionParseV2
                         action.Value.TargetStatus,
                         action.Value.TargetStatusDuration,
                         action.Value.TargetStatusParam,
-                        action.Value.GainMPPercentage,
-                        action.Value.GainJobResource));
+                        action.Value.GainMPPercentage));
                 }
                 sw.WriteLine("};");
                 sw.WriteLine("");
@@ -651,7 +659,8 @@ namespace SapphireActionParseV2
             public uint TargetStatusDuration { get; set; }
             public uint TargetStatusParam { get; set; }
             public uint GainMPPercentage { get; set; }
-            public uint GainJobResource { get; set; }
+
+            public bool HasPowerHealTag { get; set; }
         }
 
         private class FFXIVStatusEffect
