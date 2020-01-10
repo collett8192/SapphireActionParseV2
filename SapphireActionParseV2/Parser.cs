@@ -206,6 +206,7 @@ namespace SapphireActionParseV2
                                             FFXIVStatusEffect se = new FFXIVStatusEffect();
                                             se.StatusId = buffId;
                                             se.EffectType = StatusEffectType.DamageMultiplier;
+                                            se.EffectValue1 = 255; // defaults to all
                                             XAttribute attrLimitToDmgType = eleEffect.Attribute("limitto_damagetype");
                                             if (attrLimitToDmgType != null)
                                             {
@@ -234,6 +235,7 @@ namespace SapphireActionParseV2
                                             FFXIVStatusEffect se = new FFXIVStatusEffect();
                                             se.StatusId = buffId;
                                             se.EffectType = StatusEffectType.DamageReceiveMultiplier;
+                                            se.EffectValue1 = 255; // defaults to all
                                             XAttribute attrLimitToDmgType = eleEffect.Attribute("limitto_damagetype");
                                             if (attrLimitToDmgType != null)
                                             {
@@ -284,7 +286,8 @@ namespace SapphireActionParseV2
                                             FFXIVStatusEffect se = new FFXIVStatusEffect();
                                             se.StatusId = buffId;
                                             se.EffectType = StatusEffectType.CritDHRateBonus;
-                                            se.EffectValue1 = int.Parse(attrAmount.Value);
+                                            se.EffectValue1 = 1; // defaults to damage
+                                            se.EffectValue2 = int.Parse(attrAmount.Value);
                                             statusEffectTable.Add(se);
                                         }
                                         break;
@@ -303,6 +306,7 @@ namespace SapphireActionParseV2
                                             FFXIVStatusEffect se = new FFXIVStatusEffect();
                                             se.StatusId = buffId;
                                             se.EffectType = StatusEffectType.Dot;
+                                            se.EffectValue1 = 0; // defaults to unknown
                                             XAttribute attrDmgType = eleProc.Attribute("damagetype");
                                             if (attrDmgType != null)
                                             {
@@ -359,10 +363,10 @@ namespace SapphireActionParseV2
             actionTable[166].Modify(a => { a.GainMPPercentage = 10; });
             actionTable[7383].Modify(a => { a.DamagePotency = 550; });
 
-            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue2 = -20 });
-            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 100, EffectValue2 = 100 });
-            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1177, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 100, EffectValue2 = 100 });
-            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 20, EffectValue2 = 20 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = 1, EffectValue2 = -20 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 1, EffectValue2 = 100, EffectValue3 = 100 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1177, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 1, EffectValue2 = 100, EffectValue3 = 100 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 1, EffectValue2 = 20, EffectValue3 = 20 });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -454,9 +458,14 @@ namespace SapphireActionParseV2
                                                     sw.Write("magic, ");
                                                 }
                                                 break;
-                                            default:
+                                            case 255:
                                                 {
                                                     sw.Write("all, ");
+                                                }
+                                                break;
+                                            default:
+                                                {
+                                                    sw.Write("unknown, ");
                                                 }
                                                 break;
                                         }
@@ -478,9 +487,14 @@ namespace SapphireActionParseV2
                                                     sw.Write("magic, ");
                                                 }
                                                 break;
-                                            default:
+                                            case 255:
                                                 {
                                                     sw.Write("all, ");
+                                                }
+                                                break;
+                                            default:
+                                                {
+                                                    sw.Write("unknown, ");
                                                 }
                                                 break;
                                         }
@@ -532,8 +546,31 @@ namespace SapphireActionParseV2
                                 case StatusEffectType.CritDHRateBonus:
                                     {
                                         sw.Write(string.Format("  //{0}, {1}: EffectTypeCritDHRateBonus, ", statusNamePair.First, statusNamePair.Second));
-                                        sw.Write("crit " + entry.Value[i].EffectValue1.ToString() + "%, ");
-                                        sw.WriteLine("dh " + entry.Value[i].EffectValue2.ToString() + "%");
+                                        switch (entry.Value[i].EffectValue1)
+                                        {
+                                            case 1:
+                                                {
+                                                    sw.Write("damage, ");
+                                                }
+                                                break;
+                                            case 2:
+                                                {
+                                                    sw.Write("heal, ");
+                                                }
+                                                break;
+                                            case 255:
+                                                {
+                                                    sw.Write("all, ");
+                                                }
+                                                break;
+                                            default:
+                                                {
+                                                    sw.Write("unknown, ");
+                                                }
+                                                break;
+                                        }
+                                        sw.Write("crit " + entry.Value[i].EffectValue2.ToString() + "%, ");
+                                        sw.WriteLine("dh " + entry.Value[i].EffectValue3.ToString() + "%");
                                     }
                                     break;
                             }
