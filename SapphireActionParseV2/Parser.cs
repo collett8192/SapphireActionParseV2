@@ -266,6 +266,28 @@ namespace SapphireActionParseV2
                                             statusEffectTable.Add(se);
                                         }
                                         break;
+                                    case "healcastmultiplier":
+                                        {
+                                            XAttribute attrAmount = eleEffect.Attribute("amount");
+                                            if (attrAmount == null) { continue; }
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
+                                            se.StatusId = buffId;
+                                            se.EffectType = StatusEffectType.HealCastMultiplier;
+                                            se.EffectValue2 = int.Parse(attrAmount.Value);
+                                            statusEffectTable.Add(se);
+                                        }
+                                        break;
+                                    case "critmultiplier":
+                                        {
+                                            XAttribute attrAmount = eleEffect.Attribute("amount");
+                                            if (attrAmount == null) { continue; }
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
+                                            se.StatusId = buffId;
+                                            se.EffectType = StatusEffectType.CritDHRateBonus;
+                                            se.EffectValue1 = int.Parse(attrAmount.Value);
+                                            statusEffectTable.Add(se);
+                                        }
+                                        break;
                                 }
                             }
                             foreach (XElement eleProc in eleBuff.Elements("proc"))
@@ -338,6 +360,9 @@ namespace SapphireActionParseV2
             actionTable[7383].Modify(a => { a.DamagePotency = 550; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue2 = -20 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 100, EffectValue2 = 100 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1177, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 100, EffectValue2 = 100 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect() { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = 20, EffectValue2 = 20 });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -498,6 +523,19 @@ namespace SapphireActionParseV2
                                         sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
                                     }
                                     break;
+                                case StatusEffectType.HealCastMultiplier:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeHealCastMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
+                                    }
+                                    break;
+                                case StatusEffectType.CritDHRateBonus:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeCritDHRateBonus, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write("crit " + entry.Value[i].EffectValue1.ToString() + "%, ");
+                                        sw.WriteLine("dh " + entry.Value[i].EffectValue2.ToString() + "%");
+                                    }
+                                    break;
                             }
                             sw.Write("  ");
                             if (i > 0)
@@ -597,6 +635,8 @@ namespace SapphireActionParseV2
             Hot = 3,
             Dot = 4,
             HealReceiveMultiplier = 5,
+            HealCastMultiplier = 6,
+            CritDHRateBonus = 7,
         }
     }
 }
