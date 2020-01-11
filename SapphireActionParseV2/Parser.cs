@@ -175,8 +175,18 @@ namespace SapphireActionParseV2
                         XElement elePowerHeal = ability.Element("powerheal");
                         if (elePowerHeal != null)
                         {
-                            action.HasPowerHealTag = true;
+                            action.PowerHealTag = "";
                             Console.WriteLine("Found powerheal.");
+                        }
+
+                        XElement eleEnmity = ability.Element("enmity");
+                        if (eleEnmity != null)
+                        {
+                            action.EnmityTag = eleEnmity.Attribute("type")?.Value;
+                            if (action.EnmityTag != null)
+                            {
+                                Console.WriteLine("Found enmity.");
+                            }
                         }
 
                         foreach (XElement eleBuff in ability.Elements("buff"))
@@ -210,10 +220,12 @@ namespace SapphireActionParseV2
                                         {
                                             XAttribute attrAmount = eleEffect.Attribute("amount");
                                             if (attrAmount == null) { continue; }
-                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
-                                            se.StatusId = buffId;
-                                            se.EffectType = StatusEffectType.DamageMultiplier;
-                                            se.EffectValue1 = 255; // defaults to all
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect
+                                            {
+                                                StatusId = buffId,
+                                                EffectType = StatusEffectType.DamageMultiplier,
+                                                EffectValue1 = 255 // defaults to all
+                                            };
                                             XAttribute attrLimitToDmgType = eleEffect.Attribute("limitto_damagetype");
                                             if (attrLimitToDmgType != null)
                                             {
@@ -239,10 +251,12 @@ namespace SapphireActionParseV2
                                         {
                                             XAttribute attrAmount = eleEffect.Attribute("amount");
                                             if (attrAmount == null) { continue; }
-                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
-                                            se.StatusId = buffId;
-                                            se.EffectType = StatusEffectType.DamageReceiveMultiplier;
-                                            se.EffectValue1 = 255; // defaults to all
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect
+                                            {
+                                                StatusId = buffId,
+                                                EffectType = StatusEffectType.DamageReceiveMultiplier,
+                                                EffectValue1 = 255 // defaults to all
+                                            };
                                             XAttribute attrLimitToDmgType = eleEffect.Attribute("limitto_damagetype");
                                             if (attrLimitToDmgType != null)
                                             {
@@ -268,10 +282,12 @@ namespace SapphireActionParseV2
                                         {
                                             XAttribute attrAmount = eleEffect.Attribute("amount");
                                             if (attrAmount == null) { continue; }
-                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
-                                            se.StatusId = buffId;
-                                            se.EffectType = StatusEffectType.HealReceiveMultiplier;
-                                            se.EffectValue2 = int.Parse(attrAmount.Value);
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect
+                                            {
+                                                StatusId = buffId,
+                                                EffectType = StatusEffectType.HealReceiveMultiplier,
+                                                EffectValue2 = int.Parse(attrAmount.Value)
+                                            };
                                             statusEffectTable.Add(se);
                                         }
                                         break;
@@ -279,10 +295,12 @@ namespace SapphireActionParseV2
                                         {
                                             XAttribute attrAmount = eleEffect.Attribute("amount");
                                             if (attrAmount == null) { continue; }
-                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
-                                            se.StatusId = buffId;
-                                            se.EffectType = StatusEffectType.HealCastMultiplier;
-                                            se.EffectValue2 = int.Parse(attrAmount.Value);
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect
+                                            {
+                                                StatusId = buffId,
+                                                EffectType = StatusEffectType.HealCastMultiplier,
+                                                EffectValue2 = int.Parse(attrAmount.Value)
+                                            };
                                             statusEffectTable.Add(se);
                                         }
                                         break;
@@ -290,11 +308,13 @@ namespace SapphireActionParseV2
                                         {
                                             XAttribute attrAmount = eleEffect.Attribute("amount");
                                             if (attrAmount == null) { continue; }
-                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
-                                            se.StatusId = buffId;
-                                            se.EffectType = StatusEffectType.CritDHRateBonus;
-                                            se.EffectValue1 = 1; // defaults to damage
-                                            se.EffectValue2 = int.Parse(attrAmount.Value);
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect
+                                            {
+                                                StatusId = buffId,
+                                                EffectType = StatusEffectType.CritDHRateBonus,
+                                                EffectValue1 = 1, // defaults to damage
+                                                EffectValue2 = int.Parse(attrAmount.Value)
+                                            };
                                             statusEffectTable.Add(se);
                                         }
                                         break;
@@ -310,10 +330,12 @@ namespace SapphireActionParseV2
                                         {
                                             XAttribute attrPot = eleProc.Attribute("potency");
                                             if (attrPot == null) { continue; }
-                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
-                                            se.StatusId = buffId;
-                                            se.EffectType = StatusEffectType.Dot;
-                                            se.EffectValue1 = 0; // defaults to unknown
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect
+                                            {
+                                                StatusId = buffId,
+                                                EffectType = StatusEffectType.Dot,
+                                                EffectValue1 = 0 // defaults to unknown
+                                            };
                                             XAttribute attrDmgType = eleProc.Attribute("damagetype");
                                             if (attrDmgType != null)
                                             {
@@ -339,10 +361,12 @@ namespace SapphireActionParseV2
                                         {
                                             XAttribute attrPot = eleProc.Attribute("potency");
                                             if (attrPot == null) { continue; }
-                                            FFXIVStatusEffect se = new FFXIVStatusEffect();
-                                            se.StatusId = buffId;
-                                            se.EffectType = StatusEffectType.Hot;
-                                            se.EffectValue2 = int.Parse(attrPot.Value);
+                                            FFXIVStatusEffect se = new FFXIVStatusEffect
+                                            {
+                                                StatusId = buffId,
+                                                EffectType = StatusEffectType.Hot,
+                                                EffectValue2 = int.Parse(attrPot.Value)
+                                            };
                                             statusEffectTable.Add(se);
                                         }
                                         break;
@@ -415,9 +439,13 @@ namespace SapphireActionParseV2
                     {
                         sw.WriteLine(string.Format("  //restores mp: {0}%", action.Value.GainMPPercentage));
                     }
-                    if (action.Value.HasPowerHealTag)
+                    if (action.Value.PowerHealTag != null)
                     {
-                        sw.WriteLine("  //has powerheal");
+                        sw.WriteLine("  //has powerheal: " + action.Value.PowerHealTag);
+                    }
+                    if (action.Value.EnmityTag != null)
+                    {
+                        sw.WriteLine("  //has enmity: " + action.Value.EnmityTag);
                     }
                     sw.WriteLine(string.Format("  {{ {0}, {{ {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12} }} }},",
                         action.Key,
@@ -660,7 +688,8 @@ namespace SapphireActionParseV2
             public uint TargetStatusParam { get; set; }
             public uint GainMPPercentage { get; set; }
 
-            public bool HasPowerHealTag { get; set; }
+            public string EnmityTag { get; set; }
+            public string PowerHealTag { get; set; }
         }
 
         private class FFXIVStatusEffect
