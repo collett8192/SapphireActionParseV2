@@ -233,12 +233,12 @@ namespace SapphireActionParseV2
                                                 {
                                                     case "physical":
                                                         {
-                                                            se.EffectValue1 = (int)StatusEffectAttackType.Physical;
+                                                            se.EffectValue1 = (int)ActionTypeFilter.Physical;
                                                         }
                                                         break;
                                                     case "magic":
                                                         {
-                                                            se.EffectValue1 = (int)StatusEffectAttackType.Magical;
+                                                            se.EffectValue1 = (int)ActionTypeFilter.Magical;
                                                         }
                                                         break;
                                                 }
@@ -264,12 +264,12 @@ namespace SapphireActionParseV2
                                                 {
                                                     case "physical":
                                                         {
-                                                            se.EffectValue1 = (int)StatusEffectAttackType.Physical;
+                                                            se.EffectValue1 = (int)ActionTypeFilter.Physical;
                                                         }
                                                         break;
                                                     case "magic":
                                                         {
-                                                            se.EffectValue1 = (int)StatusEffectAttackType.Magical;
+                                                            se.EffectValue1 = (int)ActionTypeFilter.Magical;
                                                         }
                                                         break;
                                                 }
@@ -312,7 +312,7 @@ namespace SapphireActionParseV2
                                             {
                                                 StatusId = buffId,
                                                 EffectType = StatusEffectType.CritDHRateBonus,
-                                                EffectValue1 = (int)StatusEffectCritDHBonusFilter.Damage,
+                                                EffectValue1 = (int)CritDHBonusFilter.Damage,
                                                 EffectValue2 = int.Parse(attrAmount.Value)
                                             };
                                             statusEffectTable.Add(se);
@@ -343,12 +343,12 @@ namespace SapphireActionParseV2
                                                 {
                                                     case "physical":
                                                         {
-                                                            se.EffectValue1 = (int)StatusEffectAttackType.Physical;
+                                                            se.EffectValue1 = (int)ActionTypeFilter.Physical;
                                                         }
                                                         break;
                                                     case "magic":
                                                         {
-                                                            se.EffectValue1 = (int)StatusEffectAttackType.Magical;
+                                                            se.EffectValue1 = (int)ActionTypeFilter.Magical;
                                                         }
                                                         break;
                                                 }
@@ -382,7 +382,7 @@ namespace SapphireActionParseV2
                                                         {
                                                             StatusId = buffId,
                                                             EffectType = StatusEffectType.DamageReceiveTrigger,
-                                                            EffectValue1 = (int)StatusEffectAttackType.Physical, // defaults to physical as only vengeance seems to have this
+                                                            EffectValue1 = (int)ActionTypeFilter.Physical, // defaults to physical as only vengeance seems to have this
                                                             EffectValue2 = int.Parse(attrPot.Value),
                                                             EffectValue3 = (int)StatusEffectTriggerResult.ReflectDamage,
                                                         };
@@ -419,10 +419,10 @@ namespace SapphireActionParseV2
             actionTable[167].Modify(a => { a.GainMPPercentage = 5; });
             actionTable[44].Modify(a => { a.TargetStatus = 89; a.TargetStatusDuration = 15000; a.Comment = "This is a cheat to make vengeance working. Does not match retail packet but end result is the same. Have to script it if that matters."; });
 
-            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)StatusEffectAttackType.All, EffectValue2 = -20 });
-            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)StatusEffectCritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
-            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1177, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)StatusEffectCritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
-            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)StatusEffectCritDHBonusFilter.Damage, EffectValue2 = 20, EffectValue3 = 20 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1177, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 20, EffectValue3 = 20 });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -510,21 +510,21 @@ namespace SapphireActionParseV2
                                 case StatusEffectType.DamageMultiplier:
                                     {
                                         sw.Write(string.Format("  //{0}, {1}: EffectTypeDamageMultiplier, ", statusNamePair.First, statusNamePair.Second));
-                                        sw.Write(((StatusEffectAttackType)(entry.Value[i].EffectValue1)).ToString() + ", ");
+                                        sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
                                     }
                                     break;
                                 case StatusEffectType.DamageReceiveMultiplier:
                                     {
                                         sw.Write(string.Format("  //{0}, {1}: EffectTypeDamageReceiveMultiplier, ", statusNamePair.First, statusNamePair.Second));
-                                        sw.Write(((StatusEffectAttackType)(entry.Value[i].EffectValue1)).ToString() + ", ");
+                                        sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
                                     }
                                     break;
                                 case StatusEffectType.Dot:
                                     {
                                         sw.Write(string.Format("  //{0}, {1}: EffectTypeDot, ", statusNamePair.First, statusNamePair.Second));
-                                        sw.Write(((StatusEffectAttackType)(entry.Value[i].EffectValue1)).ToString() + ", ");
+                                        sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
                                     }
                                     break;
@@ -549,7 +549,7 @@ namespace SapphireActionParseV2
                                 case StatusEffectType.CritDHRateBonus:
                                     {
                                         sw.Write(string.Format("  //{0}, {1}: EffectTypeCritDHRateBonus, ", statusNamePair.First, statusNamePair.Second));
-                                        sw.Write(((StatusEffectCritDHBonusFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
+                                        sw.Write(((CritDHBonusFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.Write("crit " + entry.Value[i].EffectValue2.ToString() + "%, ");
                                         sw.WriteLine("dh " + entry.Value[i].EffectValue3.ToString() + "%");
                                     }
@@ -558,7 +558,7 @@ namespace SapphireActionParseV2
                                     {
                                         sw.Write(string.Format("  //{0}, {1}: EffectTypeDamageReceiveTrigger, ", statusNamePair.First, statusNamePair.Second));
                                         sw.Write(((StatusEffectTriggerResult)(entry.Value[i].EffectValue3)).ToString() + ", ");
-                                        sw.Write(((StatusEffectAttackType)(entry.Value[i].EffectValue1)).ToString() + ", ");
+                                        sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
                                     }
                                     break;
@@ -678,7 +678,7 @@ namespace SapphireActionParseV2
         }
 
         [Flags]
-        private enum StatusEffectAttackType : int
+        private enum ActionTypeFilter : int
         {
             Unknown = 0,
             Physical = 1,
@@ -687,7 +687,7 @@ namespace SapphireActionParseV2
         }
 
         [Flags]
-        private enum StatusEffectCritDHBonusFilter : int
+        private enum CritDHBonusFilter : int
         {
             None = 0,
             Damage = 1,
