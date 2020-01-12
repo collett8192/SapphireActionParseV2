@@ -201,7 +201,7 @@ namespace SapphireActionParseV2
                                 action.SelfStatus = buffId;
                                 XAttribute attrDuration = eleBuff.Attribute("duration");
                                 action.SelfStatusDuration = attrDuration == null ? 0 : uint.Parse(attrDuration.Value) * 1000;
-                                Console.WriteLine(string.Format("Found self status: {0}, {1}, {2}, {3}", id, action.TargetStatusDuration, namePair.First, namePair.Second));
+                                Console.WriteLine(string.Format("Found self status: {0}, {1}, {2}, {3}", id, action.SelfStatusDuration, namePair.First, namePair.Second));
                             }
                             else
                             {
@@ -729,6 +729,7 @@ namespace SapphireActionParseV2
             CritDHRateBonus = 7,
             DamageReceiveTrigger = 8,
             DamageDealtTrigger = 9,
+            Shield = 10,
         }
 
         [Flags]
