@@ -392,15 +392,39 @@ namespace SapphireActionParseV2
                                             }
                                         }
                                         break;
+                                    case "damagedealt":
+                                        {
+                                            switch (eleProc.Attribute("type")?.Value)
+                                            {
+                                                case "absorb":
+                                                    {
+                                                        XAttribute attrPercent = eleProc.Attribute("percent");
+                                                        if (attrPercent == null) { continue; }
+                                                        FFXIVStatusEffect se = new FFXIVStatusEffect
+                                                        {
+                                                            StatusId = buffId,
+                                                            EffectType = StatusEffectType.DamageDealtTrigger,
+                                                            EffectValue2 = int.Parse(attrPercent.Value),
+                                                            EffectValue3 = (int)StatusEffectTriggerResult.AbsorbHP,
+                                                        };
+                                                        statusEffectTable.Add(se);
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                        break;
                                 }
                             }
                         }
-                        actionTable[action.Id] = action;
+                        actionTable.Add(action);
                     }
                 }
             }
 
             //#####################
+            actionTable.Add(new FFXIVAction { Id = 7, NamePairENJP = actionNameTable[7], DamagePotency = 110 });
+            actionTable.Add(new FFXIVAction { Id = 8, NamePairENJP = actionNameTable[8], DamagePotency = 100 });
+
             //actionTable[0].Modify(a => { });
             actionTable[3].Modify(a => { a.SelfStatusParam = 30; });
             actionTable[5].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; });
@@ -423,6 +447,7 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1177, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 20, EffectValue3 = 20 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1857, EffectType = StatusEffectType.DamageDealtTrigger, EffectValue2 = 50, EffectValue3 = (int)StatusEffectTriggerResult.AbsorbHP });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -509,46 +534,46 @@ namespace SapphireActionParseV2
                             {
                                 case StatusEffectType.DamageMultiplier:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeDamageMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: DamageMultiplier, ", statusNamePair.First, statusNamePair.Second));
                                         sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
                                     }
                                     break;
                                 case StatusEffectType.DamageReceiveMultiplier:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeDamageReceiveMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: DamageReceiveMultiplier, ", statusNamePair.First, statusNamePair.Second));
                                         sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
                                     }
                                     break;
                                 case StatusEffectType.Dot:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeDot, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: Dot, ", statusNamePair.First, statusNamePair.Second));
                                         sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
                                     }
                                     break;
                                 case StatusEffectType.Hot:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeHot, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: Hot, ", statusNamePair.First, statusNamePair.Second));
                                         sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
                                     }
                                     break;
                                 case StatusEffectType.HealReceiveMultiplier:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeHealReceiveMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: HealReceiveMultiplier, ", statusNamePair.First, statusNamePair.Second));
                                         sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
                                     }
                                     break;
                                 case StatusEffectType.HealCastMultiplier:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeHealCastMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: HealCastMultiplier, ", statusNamePair.First, statusNamePair.Second));
                                         sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
                                     }
                                     break;
                                 case StatusEffectType.CritDHRateBonus:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeCritDHRateBonus, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: CritDHRateBonus, ", statusNamePair.First, statusNamePair.Second));
                                         sw.Write(((CritDHBonusFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
                                         sw.Write("crit " + entry.Value[i].EffectValue2.ToString() + "%, ");
                                         sw.WriteLine("dh " + entry.Value[i].EffectValue3.ToString() + "%");
@@ -556,10 +581,31 @@ namespace SapphireActionParseV2
                                     break;
                                 case StatusEffectType.DamageReceiveTrigger:
                                     {
-                                        sw.Write(string.Format("  //{0}, {1}: EffectTypeDamageReceiveTrigger, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(string.Format("  //{0}, {1}: DamageReceiveTrigger, ", statusNamePair.First, statusNamePair.Second));
                                         sw.Write(((StatusEffectTriggerResult)(entry.Value[i].EffectValue3)).ToString() + ", ");
-                                        sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
-                                        sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
+                                        switch ((StatusEffectTriggerResult)entry.Value[i].EffectValue3)
+                                        {
+                                            case StatusEffectTriggerResult.ReflectDamage:
+                                                {
+                                                    sw.Write(((ActionTypeFilter)(entry.Value[i].EffectValue1)).ToString() + ", ");
+                                                    sw.WriteLine("potency " + entry.Value[i].EffectValue2.ToString());
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    break;
+                                case StatusEffectType.DamageDealtTrigger:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: DamageDealtTrigger, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(((StatusEffectTriggerResult)(entry.Value[i].EffectValue3)).ToString() + ", ");
+                                        switch ((StatusEffectTriggerResult)entry.Value[i].EffectValue3)
+                                        {
+                                            case StatusEffectTriggerResult.AbsorbHP:
+                                                {
+                                                    sw.WriteLine(entry.Value[i].EffectValue2.ToString() + "%");
+                                                }
+                                                break;
+                                        }
                                     }
                                     break;
                             }
@@ -572,7 +618,7 @@ namespace SapphireActionParseV2
                             {
                                 sw.Write("//");
                             }
-                            sw.WriteLine(string.Format("{{ {0}, {{ {1}, {2}, {3}, {4}, {4} }} }},", 
+                            sw.WriteLine(string.Format("{{ {0}, {{ {1}, {2}, {3}, {4}, {5} }} }},", 
                                 entry.Value[i].StatusId,
                                 (uint)entry.Value[i].EffectType,
                                 entry.Value[i].EffectValue1,
@@ -586,6 +632,11 @@ namespace SapphireActionParseV2
                 sw.WriteLine("};");
             }
             Console.WriteLine("##### DONE #####");
+        }
+
+        private static void Add(this Dictionary<uint, FFXIVAction> actionTable, FFXIVAction action)
+        {
+            actionTable[action.Id] = action;
         }
 
         private static void Modify(this FFXIVAction action, Action<FFXIVAction> callback)
@@ -675,6 +726,7 @@ namespace SapphireActionParseV2
             HealCastMultiplier = 6,
             CritDHRateBonus = 7,
             DamageReceiveTrigger = 8,
+            DamageDealtTrigger = 9,
         }
 
         [Flags]
@@ -698,6 +750,7 @@ namespace SapphireActionParseV2
         private enum StatusEffectTriggerResult : int
         {
             ReflectDamage = 1,
+            AbsorbHP = 2,
         }
     }
 }
