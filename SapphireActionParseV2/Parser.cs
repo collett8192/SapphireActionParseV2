@@ -442,6 +442,8 @@ namespace SapphireActionParseV2
             actionTable[158].Modify(a => { a.GainMPPercentage = 30; });
             actionTable[167].Modify(a => { a.GainMPPercentage = 5; });
             actionTable[44].Modify(a => { a.TargetStatus = 89; a.TargetStatusDuration = 15000; a.Comment = "This is a cheat to make vengeance working. Does not match retail packet but end result is the same. Have to script it if that matters."; });
+            actionTable[88].Modify(a => { a.DamagePotency = 100; a.DamageComboPotency = 290; a.DamageDirectionalPotency = 330; });
+            actionTable[7535].Modify(a => { a.DamagePotency = 0; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
