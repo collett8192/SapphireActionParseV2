@@ -611,6 +611,12 @@ namespace SapphireActionParseV2
                                         }
                                     }
                                     break;
+                                case StatusEffectType.MPRestore:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: MPRestore, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.WriteLine("value " + entry.Value[i].EffectValue1.ToString());
+                                    }
+                                    break;
                             }
                             if (entry.Value[i].Comment != null)
                             {
