@@ -450,6 +450,7 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1177, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 20, EffectValue3 = 20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1857, EffectType = StatusEffectType.DamageDealtTrigger, EffectValue2 = 50, EffectValue3 = (int)StatusEffectTriggerResult.AbsorbHP });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1204, EffectType = StatusEffectType.MPRestore, EffectValue1 = 50 });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -730,6 +731,7 @@ namespace SapphireActionParseV2
             DamageReceiveTrigger = 8,
             DamageDealtTrigger = 9,
             Shield = 10,
+            MPRestore = 11,
         }
 
         [Flags]
