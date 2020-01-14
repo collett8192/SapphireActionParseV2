@@ -452,6 +452,7 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1857, EffectType = StatusEffectType.DamageDealtTrigger, EffectValue2 = 50, EffectValue3 = (int)StatusEffectTriggerResult.AbsorbHP });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1204, EffectType = StatusEffectType.MPRestore, EffectValue1 = 50 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 157, EffectType = StatusEffectType.Haste, EffectValue1 = 20 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 167, EffectType = StatusEffectType.InstantCast, EffectValue1 = 1 });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -624,6 +625,12 @@ namespace SapphireActionParseV2
                                         sw.WriteLine(entry.Value[i].EffectValue1.ToString() + "%");
                                     }
                                     break;
+                                case StatusEffectType.InstantCast:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: InstantCast, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.WriteLine(entry.Value[i].EffectValue1.ToString() + " casts");
+                                    }
+                                    break;
                             }
                             if (entry.Value[i].Comment != null)
                             {
@@ -746,6 +753,7 @@ namespace SapphireActionParseV2
             Shield = 10,
             MPRestore = 11,
             Haste = 12,
+            InstantCast = 13,
         }
 
         [Flags]
