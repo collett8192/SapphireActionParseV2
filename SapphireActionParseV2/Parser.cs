@@ -451,6 +451,7 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1825, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 20, EffectValue3 = 20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1857, EffectType = StatusEffectType.DamageDealtTrigger, EffectValue2 = 50, EffectValue3 = (int)StatusEffectTriggerResult.AbsorbHP });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1204, EffectType = StatusEffectType.MPRestore, EffectValue1 = 50 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 157, EffectType = StatusEffectType.Haste, EffectValue1 = 20 });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -617,6 +618,12 @@ namespace SapphireActionParseV2
                                         sw.WriteLine("value " + entry.Value[i].EffectValue1.ToString());
                                     }
                                     break;
+                                case StatusEffectType.Haste:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: Haste, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.WriteLine(entry.Value[i].EffectValue1.ToString() + "%");
+                                    }
+                                    break;
                             }
                             if (entry.Value[i].Comment != null)
                             {
@@ -738,6 +745,7 @@ namespace SapphireActionParseV2
             DamageDealtTrigger = 9,
             Shield = 10,
             MPRestore = 11,
+            Haste = 12,
         }
 
         [Flags]
