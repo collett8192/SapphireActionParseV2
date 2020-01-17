@@ -454,6 +454,7 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1204, EffectType = StatusEffectType.MPRestore, EffectValue1 = 50 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 157, EffectType = StatusEffectType.Haste, EffectValue1 = 20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 167, EffectType = StatusEffectType.InstantCast, EffectValue1 = 1 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1217, EffectType = StatusEffectType.NoCostCast, EffectValue1 = 1 });
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -632,6 +633,29 @@ namespace SapphireActionParseV2
                                         sw.WriteLine(entry.Value[i].EffectValue1.ToString() + " casts");
                                     }
                                     break;
+                                case StatusEffectType.NoCostCast:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: NoCostCast, ", statusNamePair.First, statusNamePair.Second));
+                                        switch (entry.Value[i].EffectValue1)
+                                        {
+                                            case 0:
+                                                {
+                                                    sw.WriteLine("all costs");
+                                                }
+                                                break;
+                                            case 1:
+                                                {
+                                                    sw.WriteLine("primary costs");
+                                                }
+                                                break;
+                                            case 2:
+                                                {
+                                                    sw.WriteLine("secondary costs");
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    break;
                             }
                             if (entry.Value[i].Comment != null)
                             {
@@ -755,6 +779,7 @@ namespace SapphireActionParseV2
             MPRestore = 11,
             Haste = 12,
             InstantCast = 13,
+            NoCostCast = 14,
         }
 
         [Flags]
