@@ -434,7 +434,6 @@ namespace SapphireActionParseV2
             actionTable[16460].Modify(a => { a.GainMPPercentage = 4; });
             actionTable[3623].Modify(a => { a.GainMPPercentage = 6; });
             actionTable[16468].Modify(a => { a.GainMPPercentage = 6; });
-            actionTable[16508].Modify(a => { a.GainMPPercentage = 5; });
             actionTable[3571].Modify(a => { a.GainMPPercentage = 5; });
             actionTable[3643].Modify(a => { a.GainMPPercentage = 6; });
             actionTable[166].Modify(a => { a.GainMPPercentage = 10; });
