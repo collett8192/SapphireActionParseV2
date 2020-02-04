@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -162,7 +163,7 @@ namespace SapphireActionParseV2
                                 if (eleHeal.Attribute("target")?.Value == "self")
                                 {
                                     action.BonusEffect = (byte)(ActionBonusEffect.SelfHeal);
-                                    action.BonusData = uint.Parse(attrPontency.Value);
+                                    action.BonusData.DataUInt16L = ushort.Parse(attrPontency.Value);
                                     Console.WriteLine(string.Format("Found self heal: potency={0}", action.BonusData));
                                 }
                                 else
@@ -429,18 +430,18 @@ namespace SapphireActionParseV2
             //actionTable[0].Modify(a => { });
             actionTable[3].Modify(a => { a.SelfStatusParam = 30; });
             actionTable[5].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; });
-            actionTable[15].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 10; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; });
-            actionTable[29].Modify(a => { a.DamagePotency = 370; a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 5; a.Comment = "potency set to max for now"; });
-            actionTable[16457].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 5; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; });
-            actionTable[16460].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 4; });
-            actionTable[3623].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 6; });
-            actionTable[16468].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 6; });
-            actionTable[3571].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 5; });
-            actionTable[3643].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 6; });
-            actionTable[166].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 10; });
+            actionTable[15].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 10; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; });
+            actionTable[29].Modify(a => { a.DamagePotency = 370; a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 5; a.Comment = "potency set to max for now"; });
+            actionTable[16457].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 5; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; });
+            actionTable[16460].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 4; });
+            actionTable[3623].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 6; });
+            actionTable[16468].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 6; });
+            actionTable[3571].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 5; });
+            actionTable[3643].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 6; });
+            actionTable[166].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 10; });
             actionTable[7383].Modify(a => { a.DamagePotency = 550; a.Comment = "potency set to max for now"; });
-            actionTable[158].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 30; });
-            actionTable[167].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 5; });
+            actionTable[158].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 30; });
+            actionTable[167].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData.DataUInt16L = 5; });
             actionTable[44].Modify(a => { a.TargetStatus = 89; a.TargetStatusDuration = 15000; a.Comment = "This is a cheat to make vengeance working. Does not match retail packet but end result is the same. Have to script it if that matters."; });
             actionTable[88].Modify(a => { a.DamagePotency = 100; a.DamageComboPotency = 290; a.DamageDirectionalPotency = 330; });
             actionTable[7535].Modify(a => { a.DamagePotency = 0; });
@@ -449,6 +450,11 @@ namespace SapphireActionParseV2
             actionTable[97].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
             actionTable[52].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
             actionTable[7389].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
+            actionTable[16463].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.CritBonus | (byte)ActionBonusEffect.DHBonus; a.BonusData.DataUInt16L = 100; });
+            actionTable[16465].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.CritBonus | (byte)ActionBonusEffect.DHBonus; a.BonusData.DataUInt16L = 100; });
+            actionTable[37].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
+            actionTable[42].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 20; });
+            actionTable[45].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
@@ -499,7 +505,7 @@ namespace SapphireActionParseV2
                     }
                     if (action.Value.BonusEffect != 0)
                     {
-                        sw.WriteLine("  //has bonus effect: " + ((ActionBonusEffect)(action.Value.BonusEffect)).ToString() + ", " + action.Value.BonusData.ToString());
+                        sw.WriteLine("  //has bonus effect: " + ((ActionBonusEffect)(action.Value.BonusEffect)).ToString() + ", " + action.Value.BonusData.DataUInt32.ToString());
                         if (action.Value.BonusRequirement != 0)
                         {
                             sw.WriteLine("  //bonus effect requirement: " + ((ActionBonusEffectRequirement)(action.Value.BonusRequirement)).ToString());
@@ -523,7 +529,7 @@ namespace SapphireActionParseV2
                         action.Value.TargetStatusParam,
                         action.Value.BonusEffect,
                         action.Value.BonusRequirement,
-                        action.Value.BonusData));
+                        action.Value.BonusData.DataUInt32));
                     sw.WriteLine("");
                 }
                 sw.WriteLine("};");
@@ -730,7 +736,7 @@ namespace SapphireActionParseV2
             public string Comment { get; set; }
             public byte BonusEffect { get; set; }
             public byte BonusRequirement { get; set; }
-            public uint BonusData { get; set; }
+            public BonusData BonusData;
         }
 
         private class FFXIVStatusEffect
@@ -802,6 +808,25 @@ namespace SapphireActionParseV2
             None = 0,
             RequireCorrectCombo = 1,
             RequireCorrectPositional = 2,
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        private struct BonusData
+        {
+            [FieldOffset(0)]
+            public uint DataUInt32;
+            [FieldOffset(0)]
+            public ushort DataUInt16L;
+            [FieldOffset(2)]
+            public ushort DataUInt16H;
+            [FieldOffset(0)]
+            public byte DataByte1;
+            [FieldOffset(1)]
+            public byte DataByte2;
+            [FieldOffset(2)]
+            public byte DataByte3;
+            [FieldOffset(3)]
+            public byte DataByte4;
         }
     }
 }
