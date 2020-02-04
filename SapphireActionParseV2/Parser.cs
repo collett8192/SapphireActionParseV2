@@ -161,8 +161,9 @@ namespace SapphireActionParseV2
                             {
                                 if (eleHeal.Attribute("target")?.Value == "self")
                                 {
-                                    action.SelfHealPotency = uint.Parse(attrPontency.Value);
-                                    Console.WriteLine(string.Format("Found self heal: potency={0}", action.SelfHealPotency));
+                                    action.BonusEffect = (byte)(ActionBonusEffect.SelfHeal);
+                                    action.BonusData = uint.Parse(attrPontency.Value);
+                                    Console.WriteLine(string.Format("Found self heal: potency={0}", action.BonusData));
                                 }
                                 else
                                 {
@@ -428,18 +429,18 @@ namespace SapphireActionParseV2
             //actionTable[0].Modify(a => { });
             actionTable[3].Modify(a => { a.SelfStatusParam = 30; });
             actionTable[5].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; });
-            actionTable[15].Modify(a => { a.GainMPPercentage = 10; });
-            actionTable[29].Modify(a => { a.DamagePotency = 370; a.GainMPPercentage = 5; a.Comment = "potency set to max for now"; });
-            actionTable[16457].Modify(a => { a.GainMPPercentage = 5; });
-            actionTable[16460].Modify(a => { a.GainMPPercentage = 4; });
-            actionTable[3623].Modify(a => { a.GainMPPercentage = 6; });
-            actionTable[16468].Modify(a => { a.GainMPPercentage = 6; });
-            actionTable[3571].Modify(a => { a.GainMPPercentage = 5; });
-            actionTable[3643].Modify(a => { a.GainMPPercentage = 6; });
-            actionTable[166].Modify(a => { a.GainMPPercentage = 10; });
+            actionTable[15].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 10; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; });
+            actionTable[29].Modify(a => { a.DamagePotency = 370; a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 5; a.Comment = "potency set to max for now"; });
+            actionTable[16457].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 5; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; });
+            actionTable[16460].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 4; });
+            actionTable[3623].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 6; });
+            actionTable[16468].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 6; });
+            actionTable[3571].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 5; });
+            actionTable[3643].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 6; });
+            actionTable[166].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 10; });
             actionTable[7383].Modify(a => { a.DamagePotency = 550; a.Comment = "potency set to max for now"; });
-            actionTable[158].Modify(a => { a.GainMPPercentage = 30; });
-            actionTable[167].Modify(a => { a.GainMPPercentage = 5; });
+            actionTable[158].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 30; });
+            actionTable[167].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.GainMPPercentage; a.BonusData = 5; });
             actionTable[44].Modify(a => { a.TargetStatus = 89; a.TargetStatusDuration = 15000; a.Comment = "This is a cheat to make vengeance working. Does not match retail packet but end result is the same. Have to script it if that matters."; });
             actionTable[88].Modify(a => { a.DamagePotency = 100; a.DamageComboPotency = 290; a.DamageDirectionalPotency = 330; });
             actionTable[7535].Modify(a => { a.DamagePotency = 0; });
@@ -478,10 +479,6 @@ namespace SapphireActionParseV2
                     {
                         sw.WriteLine(string.Format("  //has heal: potency {0}", action.Value.HealPotency));
                     }
-                    if (action.Value.SelfHealPotency > 0)
-                    {
-                        sw.WriteLine(string.Format("  //has self heal: potency {0}", action.Value.SelfHealPotency));
-                    }
                     if (action.Value.SelfStatus != 0)
                     {
                         var statusNamePair = statusNameTable[action.Value.SelfStatus];
@@ -492,10 +489,6 @@ namespace SapphireActionParseV2
                         var statusNamePair = statusNameTable[action.Value.TargetStatus];
                         sw.WriteLine(string.Format("  //applies to targets: {0}, {1}, duration {2}, param {3}", statusNamePair.First, statusNamePair.Second, action.Value.TargetStatusDuration, action.Value.TargetStatusParam));
                     }
-                    if (action.Value.GainMPPercentage > 0)
-                    {
-                        sw.WriteLine(string.Format("  //restores mp: {0}%", action.Value.GainMPPercentage));
-                    }
                     if (action.Value.PowerHealTag != null)
                     {
                         sw.WriteLine("  //has powerheal: " + action.Value.PowerHealTag);
@@ -504,24 +497,33 @@ namespace SapphireActionParseV2
                     {
                         sw.WriteLine("  //has enmity: " + action.Value.EnmityTag);
                     }
+                    if (action.Value.BonusEffect != 0)
+                    {
+                        sw.WriteLine("  //has bonus effect: " + ((ActionBonusEffect)(action.Value.BonusEffect)).ToString() + ", " + action.Value.BonusData.ToString());
+                        if (action.Value.BonusRequirement != 0)
+                        {
+                            sw.WriteLine("  //bonus effect requirement: " + ((ActionBonusEffectRequirement)(action.Value.BonusRequirement)).ToString());
+                        }
+                    }
                     if (action.Value.Comment != null)
                     {
                         sw.WriteLine("  //comment: " + action.Value.Comment);
                     }
-                    sw.WriteLine(string.Format("  {{ {0}, {{ {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12} }} }},",
+                    sw.WriteLine(string.Format("  {{ {0}, {{ {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13} }} }},",
                         action.Key,
                         action.Value.DamagePotency,
                         action.Value.DamageComboPotency,
                         action.Value.DamageDirectionalPotency,
                         action.Value.HealPotency,
-                        action.Value.SelfHealPotency,
                         action.Value.SelfStatus,
                         action.Value.SelfStatusDuration,
                         action.Value.SelfStatusParam,
                         action.Value.TargetStatus,
                         action.Value.TargetStatusDuration,
                         action.Value.TargetStatusParam,
-                        action.Value.GainMPPercentage));
+                        action.Value.BonusEffect,
+                        action.Value.BonusRequirement,
+                        action.Value.BonusData));
                     sw.WriteLine("");
                 }
                 sw.WriteLine("};");
@@ -714,7 +716,6 @@ namespace SapphireActionParseV2
             public uint DamageDirectionalPotency { get; set; }
 
             public uint HealPotency { get; set; }
-            public uint SelfHealPotency { get; set; }
 
             public uint SelfStatus { get; set; }
             public uint SelfStatusDuration { get; set; }
@@ -722,12 +723,14 @@ namespace SapphireActionParseV2
             public uint TargetStatus { get; set; }
             public uint TargetStatusDuration { get; set; }
             public uint TargetStatusParam { get; set; }
-            public uint GainMPPercentage { get; set; }
 
             public string EnmityTag { get; set; }
             public string PowerHealTag { get; set; }
 
             public string Comment { get; set; }
+            public byte BonusEffect { get; set; }
+            public byte BonusRequirement { get; set; }
+            public uint BonusData { get; set; }
         }
 
         private class FFXIVStatusEffect
@@ -782,6 +785,23 @@ namespace SapphireActionParseV2
         {
             ReflectDamage = 1,
             AbsorbHP = 2,
+        }
+
+        private enum ActionBonusEffect : byte
+        {
+            None = 0,
+            CritBonus = 1,
+            DHBonus = 2,
+            GainMPPercentage = 4,
+            GainJobResource = 8,
+            SelfHeal = 16,
+        }
+
+        private enum ActionBonusEffectRequirement : byte
+        {
+            None = 0,
+            RequireCorrectCombo = 1,
+            RequireCorrectPositional = 2,
         }
     }
 }
