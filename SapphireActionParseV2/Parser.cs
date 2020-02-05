@@ -455,6 +455,7 @@ namespace SapphireActionParseV2
             actionTable[37].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
             actionTable[42].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 20; });
             actionTable[45].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
+            actionTable[3542].Modify(a => { a.SelfStatusDuration = 6000; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
@@ -464,6 +465,8 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1204, EffectType = StatusEffectType.MPRestore, EffectValue1 = 50 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 157, EffectType = StatusEffectType.Haste, EffectValue1 = 20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 167, EffectType = StatusEffectType.InstantCast, EffectValue1 = 1 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1856, EffectType = StatusEffectType.BlockParryRateBonus, EffectValue2 = 100 });
+
             //#####################
 
             using (StreamWriter sw = new StreamWriter("ActionLutData.cpp"))
@@ -643,6 +646,13 @@ namespace SapphireActionParseV2
                                         sw.WriteLine(entry.Value[i].EffectValue1.ToString() + " casts");
                                     }
                                     break;
+                                case StatusEffectType.BlockParryRateBonus:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: BlockParryRateBonus, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write("block " + entry.Value[i].EffectValue2.ToString() + "%, ");
+                                        sw.WriteLine("parry " + entry.Value[i].EffectValue3.ToString() + "%");
+                                    }
+                                    break;
                             }
                             if (entry.Value[i].Comment != null)
                             {
@@ -767,6 +777,7 @@ namespace SapphireActionParseV2
             MPRestore = 11,
             Haste = 12,
             InstantCast = 13,
+            BlockParryRateBonus = 14,
         }
 
         [Flags]
