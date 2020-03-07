@@ -456,7 +456,7 @@ namespace SapphireActionParseV2
             actionTable[42].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 20; });
             actionTable[45].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
             actionTable[3542].Modify(a => { a.SelfStatusDuration = 6000; });
-            actionTable[16535].Modify(a => { a.DamagePotency = 900; });
+            actionTable[16535].Modify(a => { a.DamagePotency = 900; a.BonusEffect = (byte)ActionBonusEffect.DamageFallOff; a.BonusData.DataByte1 = 50; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
@@ -813,6 +813,7 @@ namespace SapphireActionParseV2
             GainMPPercentage = 4,
             GainJobResource = 8,
             SelfHeal = 16,
+            DamageFallOff = 32,
         }
 
         private enum ActionBonusEffectRequirement : byte
