@@ -426,6 +426,7 @@ namespace SapphireActionParseV2
             //#####################
             actionTable.Add(new FFXIVAction { Id = 7, NamePairENJP = actionNameTable[7], DamagePotency = 110 });
             actionTable.Add(new FFXIVAction { Id = 8, NamePairENJP = actionNameTable[8], DamagePotency = 100 });
+            actionTable.Add(new FFXIVAction { Id = 16469, NamePairENJP = actionNameTable[16469], DamagePotency = 300 });
 
             //actionTable[0].Modify(a => { });
             actionTable[3].Modify(a => { a.SelfStatusParam = 30; });
@@ -449,14 +450,21 @@ namespace SapphireActionParseV2
             actionTable[7430].Modify(a => { a.SelfStatusParam = 65436; });
             actionTable[97].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
             actionTable[52].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
-            actionTable[7389].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
+            actionTable[7389].Modify(a => { a.SelfStatusParam = 65436; });
             actionTable[16463].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.CritBonus | (byte)ActionBonusEffect.DHBonus; a.BonusData.DataUInt16L = 100; });
             actionTable[16465].Modify(a => { a.BonusEffect = (byte)ActionBonusEffect.CritBonus | (byte)ActionBonusEffect.DHBonus; a.BonusData.DataUInt16L = 100; });
-            actionTable[37].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
-            actionTable[42].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 20; });
-            actionTable[45].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement |= (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
+            actionTable[37].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
+            actionTable[42].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 20; });
+            actionTable[45].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 21; a.BonusData.DataByte4 = 10; });
             actionTable[3542].Modify(a => { a.SelfStatusDuration = 6000; });
             actionTable[16535].Modify(a => { a.DamagePotency = 900; a.BonusEffect = (byte)ActionBonusEffect.DamageFallOff; a.BonusData.DataByte1 = 75; });
+            actionTable[3632].Modify(a => { a.HealPotency = 0; a.BonusEffect = (byte)ActionBonusEffect.GainJobResource | (byte)ActionBonusEffect.SelfHeal; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 32; a.BonusData.DataByte4 = 10; a.BonusData.DataUInt16L = 300; });
+            actionTable[7390].Modify(a => { a.SelfStatusParam = 65436; });
+            actionTable[16466].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.BonusEffect = (byte)ActionBonusEffect.GainJobTimer; a.BonusData.DataByte3 = 32; a.BonusData.DataUInt16L = 30000; });
+            actionTable[16467].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.BonusEffect = (byte)ActionBonusEffect.GainJobTimer; a.BonusData.DataByte3 = 32; a.BonusData.DataUInt16L = 30000; });
+            actionTable[16469].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.BonusEffect = (byte)ActionBonusEffect.GainJobTimer; a.BonusData.DataByte3 = 32; a.BonusData.DataUInt16L = 30000; });
+            actionTable[16470].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.BonusEffect = (byte)ActionBonusEffect.GainJobTimer; a.BonusData.DataByte3 = 32; a.BonusData.DataUInt16L = 30000; });
+            actionTable[7388].Modify(a => { a.TargetStatusDuration = 15000; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
@@ -814,6 +822,7 @@ namespace SapphireActionParseV2
             GainJobResource = 8,
             SelfHeal = 16,
             DamageFallOff = 32,
+            GainJobTimer = 64,
         }
 
         private enum ActionBonusEffectRequirement : byte
