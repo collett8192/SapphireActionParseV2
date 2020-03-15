@@ -465,6 +465,7 @@ namespace SapphireActionParseV2
             actionTable[16469].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.BonusEffect = (byte)ActionBonusEffect.GainJobTimer; a.BonusData.DataByte3 = 32; a.BonusData.DataUInt16L = 30000; });
             actionTable[16470].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.BonusEffect = (byte)ActionBonusEffect.GainJobTimer; a.BonusData.DataByte3 = 32; a.BonusData.DataUInt16L = 30000; });
             actionTable[7388].Modify(a => { a.TargetStatusDuration = 15000; });
+            actionTable[7393].Modify(a => { a.SelfStatus = 0; a.Comment = "status removed need script"; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
