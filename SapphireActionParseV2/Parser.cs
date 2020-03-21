@@ -476,6 +476,8 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 157, EffectType = StatusEffectType.Haste, EffectValue1 = 20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 167, EffectType = StatusEffectType.InstantCast, EffectValue1 = 1 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1856, EffectType = StatusEffectType.BlockParryRateBonus, EffectValue2 = 100 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 742, EffectType = StatusEffectType.MPRestorePerGCD, EffectValue1 = 6 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1972, EffectType = StatusEffectType.MPRestorePerGCD, EffectValue1 = 2, EffectValue2 = 7392, EffectValue3 = 7391 });
 
             //#####################
 
@@ -788,6 +790,7 @@ namespace SapphireActionParseV2
             Haste = 12,
             InstantCast = 13,
             BlockParryRateBonus = 14,
+            MPRestorePerGCD = 15,
         }
 
         [Flags]
