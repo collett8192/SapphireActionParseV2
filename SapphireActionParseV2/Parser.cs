@@ -466,6 +466,13 @@ namespace SapphireActionParseV2
             actionTable[16470].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.BonusEffect = (byte)ActionBonusEffect.GainJobTimer; a.BonusData.DataByte3 = 32; a.BonusData.DataUInt16L = 30000; });
             actionTable[7388].Modify(a => { a.TargetStatusDuration = 15000; });
             actionTable[7393].Modify(a => { a.SelfStatus = 0; a.Comment = "status removed need script"; });
+            actionTable[16468].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; });
+            actionTable[16139].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.HealPotency = 0; });
+            actionTable[16146].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
+            actionTable[16147].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
+            actionTable[16150].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
+            actionTable[16145].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 37; a.BonusData.DataByte4 = 1; });
+            actionTable[16149].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 37; a.BonusData.DataByte4 = 1; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
