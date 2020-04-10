@@ -487,6 +487,7 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 742, EffectType = StatusEffectType.MPRestorePerGCD, EffectValue1 = 6 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1972, EffectType = StatusEffectType.MPRestorePerGCD, EffectValue1 = 2, EffectValue2 = 7392, EffectValue3 = 7391 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1233, EffectType = StatusEffectType.AlwaysCombo, EffectValue1 = 3 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1299, EffectType = StatusEffectType.Haste, EffectValue1 = 13 });
 
             //#####################
 
