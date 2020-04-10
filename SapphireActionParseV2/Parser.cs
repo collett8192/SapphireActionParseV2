@@ -473,6 +473,7 @@ namespace SapphireActionParseV2
             actionTable[16150].Modify(a => { a.SelfStatus = 0; a.SelfStatusDuration = 0; a.Comment = "status removed need script"; });
             actionTable[16145].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 37; a.BonusData.DataByte4 = 1; });
             actionTable[16149].Modify(a => { a.BonusEffect |= (byte)ActionBonusEffect.GainJobResource; a.BonusRequirement = (byte)ActionBonusEffectRequirement.RequireCorrectCombo; a.BonusData.DataByte3 = 37; a.BonusData.DataByte4 = 1; });
+            actionTable[7499].Modify(a => { a.SelfStatusParam = 3; });
 
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1191, EffectType = StatusEffectType.DamageReceiveMultiplier, EffectValue1 = (int)ActionTypeFilter.All, EffectValue2 = -20 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 86, EffectType = StatusEffectType.CritDHRateBonus, EffectValue1 = (int)CritDHBonusFilter.Damage, EffectValue2 = 100, EffectValue3 = 100 });
@@ -485,6 +486,7 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1856, EffectType = StatusEffectType.BlockParryRateBonus, EffectValue2 = 100 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 742, EffectType = StatusEffectType.MPRestorePerGCD, EffectValue1 = 6 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1972, EffectType = StatusEffectType.MPRestorePerGCD, EffectValue1 = 2, EffectValue2 = 7392, EffectValue3 = 7391 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1233, EffectType = StatusEffectType.AlwaysCombo, EffectValue1 = 3 });
 
             //#####################
 
@@ -672,6 +674,18 @@ namespace SapphireActionParseV2
                                         sw.WriteLine("parry " + entry.Value[i].EffectValue3.ToString() + "%");
                                     }
                                     break;
+                                case StatusEffectType.MPRestorePerGCD:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: MPRestorePerGCD, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.WriteLine(entry.Value[i].EffectValue1.ToString() + "%");
+                                    }
+                                    break;
+                                case StatusEffectType.AlwaysCombo:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: AlwaysCombo, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.WriteLine(entry.Value[i].EffectValue1.ToString() + " uses");
+                                    }
+                                    break;
                             }
                             if (entry.Value[i].Comment != null)
                             {
@@ -798,6 +812,7 @@ namespace SapphireActionParseV2
             InstantCast = 13,
             BlockParryRateBonus = 14,
             MPRestorePerGCD = 15,
+            AlwaysCombo = 16,
         }
 
         [Flags]
