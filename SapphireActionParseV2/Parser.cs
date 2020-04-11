@@ -486,8 +486,9 @@ namespace SapphireActionParseV2
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1856, EffectType = StatusEffectType.BlockParryRateBonus, EffectValue2 = 100 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 742, EffectType = StatusEffectType.MPRestorePerGCD, EffectValue1 = 6 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1972, EffectType = StatusEffectType.MPRestorePerGCD, EffectValue1 = 2, EffectValue2 = 7392, EffectValue3 = 7391 });
-            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1233, EffectType = StatusEffectType.AlwaysCombo, EffectValue1 = 3 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1233, EffectType = StatusEffectType.AlwaysCombo, EffectValue1 = 3, EffectValue3 = 3 });
             statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1299, EffectType = StatusEffectType.Haste, EffectValue1 = 13 });
+            statusEffectTable.Overwrite(new FFXIVStatusEffect { StatusId = 1229, EffectType = StatusEffectType.PotencyMultiplier, EffectValue1 = 1, EffectValue3 = 3, EffectValue4 = 50 });
 
             //#####################
 
@@ -814,6 +815,7 @@ namespace SapphireActionParseV2
             BlockParryRateBonus = 14,
             MPRestorePerGCD = 15,
             AlwaysCombo = 16,
+            PotencyMultiplier = 17,
         }
 
         [Flags]
