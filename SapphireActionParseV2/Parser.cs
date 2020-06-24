@@ -688,6 +688,17 @@ namespace SapphireActionParseV2
                                         sw.WriteLine(entry.Value[i].EffectValue1.ToString() + " uses");
                                     }
                                     break;
+                                case StatusEffectType.PotencyMultiplier:
+                                    {
+                                        sw.Write(string.Format("  //{0}, {1}: PotencyMultiplier, ", statusNamePair.First, statusNamePair.Second));
+                                        sw.Write(entry.Value[i].EffectValue1.ToString() + " uses, ");
+                                        sw.WriteLine(entry.Value[i].EffectValue4.ToString() + "%");
+                                        if (entry.Value[i].EffectValue2 != 0)
+                                        {
+                                            sw.WriteLine("//WARNING: value 2 should be 0 for this type");
+                                        }
+                                    }
+                                    break;
                             }
                             if (entry.Value[i].Comment != null)
                             {
